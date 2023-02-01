@@ -16,6 +16,7 @@ import {
 import AppTextInput from "../components/AppTextInput";
 import Card from "../components/Card";
 import axios from "axios";
+import Activity from "../components/activity";
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(8).label("Password"),
@@ -27,6 +28,7 @@ const Home = () => {
   const [editPassword, setEditPassword] = useState("");
   const [editID, setEditID] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [animations, setAnimations] = useState(false);
 
   const [pageLoad, setPageLoad] = useState(false);
 
@@ -151,6 +153,10 @@ const Home = () => {
       </Formik>
       {/* <Button onPress={() => check()} title="Press" /> */}
       {/* Data */}
+      {/* <Activity visible={true} /> */}
+      {/* {animations === true ? <Activity visible={true} /> : null} */}
+
+      {/* {animations === false ? ( */}
       <View>
         <FlatList
           data={data}
@@ -173,6 +179,8 @@ const Home = () => {
           )}
         />
       </View>
+      {/* ) : null} */}
+
       <View>
         <Modal visible={modalVisible} animationType={"fade"}>
           <Text style={styles.heading}>Edit Your Data</Text>
@@ -235,6 +243,9 @@ const styles = StyleSheet.create({
   },
   update: {
     paddingBottom: 10,
+  },
+  anime: {
+    // top: 20,
   },
 });
 export default Home;
