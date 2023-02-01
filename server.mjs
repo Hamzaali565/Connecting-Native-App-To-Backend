@@ -10,8 +10,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:19000", "*"],
-    credentials: true,
+    origin: ["http://192.168.18.175:19000"],
+    "port": 19000
+    // credentials: true,
   })
 );
 
@@ -22,6 +23,11 @@ let NewUserSchema = new mongoose.Schema({
 const userModels = mongoose.model("user", NewUserSchema);
 
 app.post("/send-data", async (req, res) => {
+
+  // console.log(req);
+
+  // res.send('finsh');
+  // return false;
   try {
     const body = await req.body;
     if (!body.email) throw new Error("Email Is required");
@@ -43,6 +49,7 @@ app.post("/send-data", async (req, res) => {
           (err, saved) => {
             if (!err)
               res.status(200).send({ message: "Your Data is Submitted" });
+            console.log(saved);
           }
         );
       } else throw new Error("Server Error");

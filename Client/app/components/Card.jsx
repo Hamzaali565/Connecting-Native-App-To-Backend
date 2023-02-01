@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View, StyleSheet, Text } from "react-native";
+import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Screen from "./Screen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 const Card = ({ email, password, onEdit, onDelete }) => {
@@ -8,19 +8,17 @@ const Card = ({ email, password, onEdit, onDelete }) => {
       <View style={styles.imageAndButton}>
         <Image source={require("../Images/profile.jpg")} style={styles.Image} />
         <View style={styles.icons}>
-          <MaterialCommunityIcons
-            name="pencil"
-            size={25}
-            color="orange"
-            onPress={onEdit}
-          />
-          <MaterialCommunityIcons
-            name="delete"
-            size={25}
-            onPress={onDelete}
-            color="red"
-            style={{ paddingHorizontal: 10 }}
-          />
+          <TouchableOpacity onPress={onEdit}>
+            <MaterialCommunityIcons name="pencil" size={25} color="orange" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onDelete}>
+            <MaterialCommunityIcons
+              name="delete"
+              size={25}
+              color="red"
+              style={{ paddingHorizontal: 10 }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.credentials}>

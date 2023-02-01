@@ -1,14 +1,17 @@
-import { Formik } from "formik";
+import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorMessage from "../components/ErrorMessage";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   View,
   StyleSheet,
   TextInput,
   Image,
+  Modal,
+  Text,
   FlatList,
+  Alert,
 } from "react-native";
 import AppTextInput from "../components/AppTextInput";
 import Card from "../components/Card";
@@ -17,42 +20,109 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(8).label("Password"),
 });
-const Data = [
-  {
-    email: "hamzaali@gmail.com",
-    password: "hamza",
-    id: "1",
-  },
-  {
-    email: "hamzakhan@gmail.com",
-    password: "hamza",
-    id: "2",
-  },
-  {
-    id: "3",
-    email: "Muhammmadhamza@gmail.com",
-    password: "hamza",
-  },
-];
+//
 const Home = () => {
   const [data, setData] = useState([]);
+  const [editEmail, setEditEmail] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [editID, setEditID] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const Post = () => {
-    let response = axios.post("http://localhost:19000/send-data", {
-      email: "hamza@hamza.com",
-      password: "12345678",
-    });
-    if (response) {
-      console.log("ok");
-    } else {
-      ("KO");
-    }
+  const [pageLoad, setPageLoad] = useState(false);
+
+  const getAllDAta = async () => {
+    const call = axios
+      .get("http://192.168.18.175:5001/datas")
+      .then(function (response) {
+        setData(response.data.data.reverse());
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
+  useEffect(() => {
+    getAllDAta();
+  }, [pageLoad]);
+
+  const Post = async (email, password) => {
+    const call = axios
+      .post("http://192.168.18.175:5001/send-data", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        console.log(response.data);
+        setPageLoad(!pageLoad);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const DeletePost = async (id) => {
+    // const myFormik = useFormik();
+    const call = axios
+      .delete(`http://192.168.18.175:5001/delete/${editID}`)
+      .then(function (response) {
+        console.log(response.data);
+        setPageLoad(!pageLoad);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const Ask = () => {
+    Alert.alert("Warning", "Are You Sure", [
+      { text: "Yes", onPress: () => DeletePost() },
+      { text: "No" },
+    ]);
+  };
+  const Update = async (id) => {
+    // const myFormik = useFormik();
+    const call = axios
+      .put(`http://192.168.18.175:5001/edit/${editID}`, {
+        email: editEmail,
+        password: editPassword,
+      })
+      .then(function (response) {
+        console.log(response.data);
+        setPageLoad(!pageLoad);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    setModalVisible(false);
+  };
+  const EditData = (id) => {
+    setModalVisible(true);
+  };
+  // const check = () => {
+  //   const cloudinaryData = new FormData();
+  //   cloudinaryData.append("file", pic);
+  //   cloudinaryData.append("upload_preset", "postingApp");
+  //   cloudinaryData.append("cloud_name", "dozqa9pai");
+  //   // console.log(cloudinaryData);
+  //   axios.post(`https://api.cloudinary.com/v1_1/dozqa9pai/image/upload`,
+  //       cloudinaryData,
+  //       {
+  //           headers: { 'Content-Type': 'multipart/form-data' }
+
+  //       })
+  //       .then(async res => {
+
+  //           console.log("from then", res.data);
+
+  //         })
+  // };
   return (
     <View style={styles.container}>
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          // setEmail(values.email);
+          // setPassword(values.password);
+          Post(values.email, values.password);
+          // console.log(user);
+        }}
         validationSchema={validationSchema}
       >
         {({ handleChange, handleSubmit, setFieldTouched, touched, errors }) => (
@@ -79,23 +149,59 @@ const Home = () => {
           </>
         )}
       </Formik>
-
+      {/* <Button onPress={() => check()} title="Press" /> */}
       {/* Data */}
       <View>
         <FlatList
-          data={Data}
-          keyExtractor={(item) => item.id}
+          data={data}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <Card
               email={item.email}
               password={item.password}
               onEdit={() => {
-                Post();
+                EditData(item._id);
+                setEditEmail(item.email);
+                setEditID(item._id);
+                setEditPassword(item.password);
               }}
-              onDelete={() => {}}
+              onDelete={() => {
+                setEditID(item._id);
+                Ask();
+              }}
             />
           )}
         />
+      </View>
+      <View>
+        <Modal visible={modalVisible} animationType={"fade"}>
+          <Text style={styles.heading}>Edit Your Data</Text>
+          <View style={styles.container2}>
+            <AppTextInput
+              placeholder="enter your new Email"
+              value={editEmail}
+              onChangeText={(text) => setEditEmail(text)}
+            />
+            <View style={styles.password2}>
+              <AppTextInput
+                placeholder="enter your new Password"
+                value={editPassword}
+                onChangeText={(text) => setEditPassword(text)}
+              />
+            </View>
+            <View style={styles.update}>
+              <Button
+                title="Update"
+                onPress={() => {
+                  Update();
+                }}
+              />
+            </View>
+            <View>
+              <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -111,8 +217,41 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
   },
-  //   Button: {
-  //     padding: 10,
-  //   },
+  container2: {
+    justifyContent: "center",
+    // flexDirection: "row",
+    // alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 200,
+  },
+  heading: {
+    justifyContent: "center",
+    alignSelf: "center",
+    top: 70,
+    fontSize: 30,
+  },
+  password2: {
+    paddingVertical: 20,
+  },
+  update: {
+    paddingBottom: 10,
+  },
 });
 export default Home;
+// const Data = [
+//   {
+//     email: "hamzaali@gmail.com",
+//     password: "hamza",
+//     id: "1",
+//   },
+//   {
+//     email: "hamzakhan@gmail.com",
+//     password: "hamza",
+//     id: "2",
+//   },
+//   {
+//     id: "3",
+//     email: "Muhammmadhamza@gmail.com",
+//     password: "hamza",
+//   },
+// ];
