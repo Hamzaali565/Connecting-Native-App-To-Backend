@@ -2,16 +2,22 @@ import React from "react";
 import { Image, View, StyleSheet, Text } from "react-native";
 import Screen from "./Screen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-const Card = ({ email, password }) => {
+const Card = ({ email, password, onEdit, onDelete }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageAndButton}>
         <Image source={require("../Images/profile.jpg")} style={styles.Image} />
         <View style={styles.icons}>
-          <MaterialCommunityIcons name="pencil" size={25} color="orange" />
+          <MaterialCommunityIcons
+            name="pencil"
+            size={25}
+            color="orange"
+            onPress={onEdit}
+          />
           <MaterialCommunityIcons
             name="delete"
             size={25}
+            onPress={onDelete}
             color="red"
             style={{ paddingHorizontal: 10 }}
           />

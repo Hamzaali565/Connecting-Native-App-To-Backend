@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
 import ErrorMessage from "../components/ErrorMessage";
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   View,
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import AppTextInput from "../components/AppTextInput";
 import Card from "../components/Card";
+import axios from "axios";
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(8).label("Password"),
@@ -34,6 +35,19 @@ const Data = [
   },
 ];
 const Home = () => {
+  const [data, setData] = useState([]);
+
+  const Post = () => {
+    let response = axios.post("http://localhost:19000/send-data", {
+      email: "hamza@hamza.com",
+      password: "12345678",
+    });
+    if (response) {
+      console.log("ok");
+    } else {
+      ("KO");
+    }
+  };
   return (
     <View style={styles.container}>
       <Formik
@@ -72,7 +86,14 @@ const Home = () => {
           data={Data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <Card email={item.email} password={item.password} />
+            <Card
+              email={item.email}
+              password={item.password}
+              onEdit={() => {
+                Post();
+              }}
+              onDelete={() => {}}
+            />
           )}
         />
       </View>
