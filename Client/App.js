@@ -7,13 +7,13 @@ import Home from "./app/screens/Home";
 export default function App() {
   return (
     <Screen>
-      {/* <ScrollView> */}
-      {/* <AppTextInput name="email" placeholder="Enter your Email" /> */}
-      {/* <Home /> */}
-      {/* <LoadAnimation /> */}
-      {/* <Activity visible={true} /> */}
-      <EditData />
-      {/* </ScrollView> */}
+      <ScrollView>
+        {/* <AppTextInput name="email" placeholder="Enter your Email" /> */}
+        <Home />
+        {/* <LoadAnimation /> */}
+        {/* <Activity visible={true} /> */}
+        {/* <EditData /> */}
+      </ScrollView>
     </Screen>
   );
 }

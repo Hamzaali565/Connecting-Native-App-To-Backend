@@ -21,6 +21,10 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required().min(8).label("Password"),
 });
 //
+let baseUrl = "https://native-server-production.up.railway.app";
+// if (window.location.href.split(":")[0] === "http") {
+//   baseUrl = "http://192.168.18.175:5001";
+// }
 const Home = () => {
   const [data, setData] = useState([]);
   const [editEmail, setEditEmail] = useState("");
@@ -32,7 +36,7 @@ const Home = () => {
 
   const getAllDAta = async () => {
     const call = axios
-      .get("http://192.168.3.103:5001/datas")
+      .get(`${baseUrl}/datas`)
       .then(function (response) {
         setData(response.data.data.reverse());
       })
@@ -46,7 +50,7 @@ const Home = () => {
 
   const Post = async (email, password) => {
     const call = axios
-      .post("http://192.168.3.103:5001/send-data", {
+      .post(`${baseUrl}/send-data`, {
         email: email,
         password: password,
       })
@@ -61,7 +65,7 @@ const Home = () => {
   const DeletePost = async (id) => {
     // const myFormik = useFormik();
     const call = axios
-      .delete(`http://192.168.3.103:5001/delete/${editID}`)
+      .delete(`${baseUrl}/delete/${editID}`)
       .then(function (response) {
         console.log(response.data);
         setPageLoad(!pageLoad);
@@ -79,7 +83,7 @@ const Home = () => {
   const Update = async (id) => {
     // const myFormik = useFormik();
     const call = axios
-      .put(`http://192.168.3.103:5001/edit/${editID}`, {
+      .put(`${baseUrl}/edit/${editID}`, {
         email: editEmail,
         password: editPassword,
       })

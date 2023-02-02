@@ -1,47 +1,133 @@
-import React from "react";
+import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Text, TouchableOpacity, View } from "react-native";
+import axios from "axios";
 
 const EditData = () => {
+  const [pic, setPic] = useState(null);
   const launchGallery = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
+      // mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // allowsEditing: true,
+      // aspect: [4, 4],
+      // quality: 1,
     });
     if (!result.canceled) {
       // console.log(gImages);
-      let newFile = {
-        uri: result.assets[0].uri,
-        type: `${result.assets[0].uri.split(".")[1]}`,
-        name: `test.${result.assets[0].uri.split(".")[1]}`,
-      };
-      handleUpload(newFile);
+      // let newFile = {
+      //   uri: result.assets[0].uri,
+      //   type: `${result.assets[0].uri.split(".")[1]}`,
+      //   name: `test.${result.assets[0].uri.split(".")[1]}`,
+      // };
+      setPic(
+        // {
+        result.assets[0].uri
+        // type: `${result.assets[0].uri.split(".")[1]}`,
+        // name: `test.${result.assets[0].uri.split(".")[1]}`,
+        // }
+      );
+      handleUpload();
     }
   };
 
-  const handleUpload = (image) => {
-    const data = new FormData();
-    data.append("file", image);
-    data.append("upload_preset", "empeloyapp");
-    data.append("cloud_name", "dozqa9pai");
+  // const handleUpload = (image) => {
+  //   const data = new FormData();
+  //   data.append("file", image);
+  //   data.append("upload_preset", "empeloyapp");
+  //   data.append("cloud_name", "dozqa9pai");
 
-    fetch("https://api.cloudinary.com/v1_1/dozqa9pai/image/upload", {
-      method: "post",
-      body: data,
-    })
+  //   fetch("https://api.cloudinary.com/v1_1/dozqa9pai/image/upload", {
+  //     method: "post",
+  //     body: data,
+  //   })
+  //     // .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //     });
+  // };
+
+  const handleUpload = () => {
+    const cloudinaryData = new FormData();
+    cloudinaryData.append("file", pic);
+    cloudinaryData.append("upload_preset", "postingApp");
+    cloudinaryData.append("cloud_name", "dozqa9pai");
+    // console.log(cloudinaryData);
+    axios
+      .post(
+        `https://api.cloudinary.com/v1_1/dozqa9pai/image/upload`,
+        cloudinaryData,
+        {
+          headers: {
+            // Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then((res) => {
+        console.log("from then", res.data);
+      })
+      .catch((err) => {
+        console.log("from catch", err);
       });
   };
+  // const LoginData = async (e) => {
+  //   e.preventDefault();
+
+  //   let fileInput = document.getElementById("picture");
+  //   console.log("fileInput", fileInput.files[0]);
+  //   let formData = new FormData();
+  //   formData.append("myFiles", fileInput.files[0]);
+  //   formData.append("imageUrl", preview);
+  //   console.log("imageUrl", preview);
+  //   setLoader(true);
+
+  //   axios({
+  //     method: "post",
+  //     url: `${baseUrl}/send-credentails`,
+  //     data: formData,
+  //     headers: { "Content-Type": "multipart/form-data" },
+  //   })
+  //     .then((res) => {
+  //       console.log("response Success", res.data);
+
+  //       // console.log(response);
+  //       setGetData(!getData);
+  //       setOpens(true);
+  //       setMtype("success");
+  //       setMessages(res.data.message);
+  //       setLoader(false);
+  //       console.log(preview);
+  //       setTimeout(() => {
+  //         setEmail("");
+  //         setPassword("");
+  //         setPreview("");
+  //       }, "1000");
+  //       //
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpens(true);
+  //       setMtype("error");
+  //       setLoader(false);
+
+  //       // if (
+  //       //   err.response.data.message ===
+  //       //   "TypeError: Cannot read properties of undefined (reading 'originalname')"
+  //       // ) {
+  //       //   setMessages("please select an Image");
+  //       // } else {
+  //       //   setMessages(err.response.data.message);
+  //       // }
+  //     });
+  // };
+
   return (
-    <View>
-      <TouchableOpacity onPress={() => launchGallery()}>
+    <TouchableOpacity onPress={() => launchGallery()}>
+      <View style={{ padding: 20, backgroundColor: "yellow" }}>
         <Text>UPload</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
