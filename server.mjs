@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://192.168.18.175:19000"],
-    "port": 19000
+    origin: ["http://192.168.3.103:19000"],
+    port: 19000,
     // credentials: true,
   })
 );
@@ -23,7 +23,6 @@ let NewUserSchema = new mongoose.Schema({
 const userModels = mongoose.model("user", NewUserSchema);
 
 app.post("/send-data", async (req, res) => {
-
   // console.log(req);
 
   // res.send('finsh');

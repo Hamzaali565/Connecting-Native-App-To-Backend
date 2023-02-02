@@ -16,7 +16,6 @@ import {
 import AppTextInput from "../components/AppTextInput";
 import Card from "../components/Card";
 import axios from "axios";
-import Activity from "../components/activity";
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(8).label("Password"),
@@ -28,13 +27,12 @@ const Home = () => {
   const [editPassword, setEditPassword] = useState("");
   const [editID, setEditID] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [animations, setAnimations] = useState(false);
 
   const [pageLoad, setPageLoad] = useState(false);
 
   const getAllDAta = async () => {
     const call = axios
-      .get("http://192.168.18.175:5001/datas")
+      .get("http://192.168.3.103:5001/datas")
       .then(function (response) {
         setData(response.data.data.reverse());
       })
@@ -48,7 +46,7 @@ const Home = () => {
 
   const Post = async (email, password) => {
     const call = axios
-      .post("http://192.168.18.175:5001/send-data", {
+      .post("http://192.168.3.103:5001/send-data", {
         email: email,
         password: password,
       })
@@ -63,7 +61,7 @@ const Home = () => {
   const DeletePost = async (id) => {
     // const myFormik = useFormik();
     const call = axios
-      .delete(`http://192.168.18.175:5001/delete/${editID}`)
+      .delete(`http://192.168.3.103:5001/delete/${editID}`)
       .then(function (response) {
         console.log(response.data);
         setPageLoad(!pageLoad);
@@ -81,7 +79,7 @@ const Home = () => {
   const Update = async (id) => {
     // const myFormik = useFormik();
     const call = axios
-      .put(`http://192.168.18.175:5001/edit/${editID}`, {
+      .put(`http://192.168.3.103:5001/edit/${editID}`, {
         email: editEmail,
         password: editPassword,
       })
@@ -97,24 +95,7 @@ const Home = () => {
   const EditData = (id) => {
     setModalVisible(true);
   };
-  // const check = () => {
-  //   const cloudinaryData = new FormData();
-  //   cloudinaryData.append("file", pic);
-  //   cloudinaryData.append("upload_preset", "postingApp");
-  //   cloudinaryData.append("cloud_name", "dozqa9pai");
-  //   // console.log(cloudinaryData);
-  //   axios.post(`https://api.cloudinary.com/v1_1/dozqa9pai/image/upload`,
-  //       cloudinaryData,
-  //       {
-  //           headers: { 'Content-Type': 'multipart/form-data' }
 
-  //       })
-  //       .then(async res => {
-
-  //           console.log("from then", res.data);
-
-  //         })
-  // };
   return (
     <View style={styles.container}>
       <Formik
@@ -151,12 +132,7 @@ const Home = () => {
           </>
         )}
       </Formik>
-      {/* <Button onPress={() => check()} title="Press" /> */}
-      {/* Data */}
-      {/* <Activity visible={true} /> */}
-      {/* {animations === true ? <Activity visible={true} /> : null} */}
 
-      {/* {animations === false ? ( */}
       <View>
         <FlatList
           data={data}
@@ -179,7 +155,6 @@ const Home = () => {
           )}
         />
       </View>
-      {/* ) : null} */}
 
       <View>
         <Modal visible={modalVisible} animationType={"fade"}>
